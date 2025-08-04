@@ -18,6 +18,9 @@
         #auth-forms { display: block; }
         #app-content { display: none; }
         .error { color: red; text-align: center; margin-top: 1rem; }
+        #websocket-controls { margin-top: 1.5rem; border-top: 1px solid #eee; padding-top: 1.5rem; }
+        #buttons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 1rem; }
+        .grid-button { padding: 1rem; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -59,7 +62,24 @@
         <div id="app-content">
             <h1>¡Bienvenido!</h1>
             <div id="userInfo"></div>
-            <button id="logout-button" class="btn-secondary">Cerrar Sesión</button>
+
+            <div id="websocket-controls">
+                <h2>Conexión al PC</h2>
+                <div class="form-group">
+                    <label for="server-ip">IP del Servidor</label>
+                    <input type="text" id="server-ip" placeholder="Ej: 192.168.1.100">
+                </div>
+                <button id="connect-button" class="btn-primary">Conectar</button>
+                <p id="ws-status" style="text-align: center; margin-top: 1rem;"></p>
+            </div>
+
+            <div id="buttons-grid" style="display:none;">
+                 <button class="grid-button btn-secondary" data-action='{"action": "type", "payload": "Hola desde la web!"}'>Escribir 'Hola'</button>
+                 <button class="grid-button btn-secondary" data-action='{"action": "key_tap", "payload": "enter"}'>Pulsar Enter</button>
+                 <button class="grid-button btn-secondary" data-action='{"action": "mouse_click"}'>Click Izquierdo</button>
+            </div>
+
+            <button id="logout-button" class="btn-secondary" style="margin-top: 2rem;">Cerrar Sesión</button>
         </div>
     </div>
 
@@ -83,6 +103,9 @@
         const auth = firebase.auth();
         const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+        // WebSocket variable
+        let ws;
+
         // DOM Elements
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
@@ -90,6 +113,10 @@
         const authForms = document.getElementById('auth-forms');
         const userInfo = document.getElementById('userInfo');
         const authError = document.getElementById('auth-error');
+        const serverIpInput = document.getElementById('server-ip');
+        const connectButton = document.getElementById('connect-button');
+        const wsStatus = document.getElementById('ws-status');
+        const buttonsGrid = document.getElementById('buttons-grid');
 
         // Buttons
         const loginButton = document.getElementById('login-button');
@@ -100,6 +127,58 @@
         // Links
         const showRegisterLink = document.getElementById('show-register');
         const showLoginLink = document.getElementById('show-login');
+
+        // --- WebSocket Functions ---
+        function connectWebSocket() {
+            const ip = serverIpInput.value;
+            if (!ip) {
+                wsStatus.innerText = "Por favor, introduce una IP.";
+                wsStatus.style.color = "red";
+                return;
+            }
+
+            wsStatus.innerText = `Conectando a wss://${ip}:8080...`;
+            wsStatus.style.color = "orange";
+            
+            ws = new WebSocket(`wss://${ip}:8080`);
+
+            ws.onopen = () => {
+                console.log("Conexión WebSocket establecida.");
+                wsStatus.innerText = "Conectado";
+                wsStatus.style.color = "green";
+                buttonsGrid.style.display = "grid";
+            };
+
+            ws.onmessage = (event) => {
+                console.log("Mensaje recibido del servidor:", event.data);
+                // Aquí se podría manejar feedback del servidor
+            };
+
+            ws.onclose = () => {
+                console.log("Conexión WebSocket cerrada.");
+                wsStatus.innerText = "Desconectado";
+                wsStatus.style.color = "red";
+                buttonsGrid.style.display = "none";
+            };
+
+            ws.onerror = (error) => {
+                console.error("Error en WebSocket:", error);
+                wsStatus.innerText = "Error de conexión";
+                wsStatus.style.color = "red";
+                buttonsGrid.style.display = "none";
+            };
+        }
+
+        function sendWsMessage(message) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(message);
+            } else {
+                console.error("WebSocket no está conectado.");
+                wsStatus.innerText = "Error: No conectado";
+                wsStatus.style.color = "red";
+            }
+        }
+
 
         // --- Event Listeners ---
 
@@ -127,6 +206,7 @@
                 registerForm.style.display = 'none';
                 userInfo.innerText = '';
                 authError.innerText = '';
+                if (ws) ws.close(); // Cierra el websocket si el usuario se desloguea
             }
         });
 
@@ -142,7 +222,6 @@
                     userCredential.user.sendEmailVerification()
                         .then(() => {
                             alert('¡Registro exitoso! Se ha enviado un correo de verificación. Por favor, revisa tu bandeja de entrada y haz clic en el enlace para poder iniciar sesión.');
-                            // Mantenemos al usuario en la pantalla de login
                         });
                 })
                 .catch(error => {
@@ -193,6 +272,17 @@
             registerForm.style.display = 'none';
             loginForm.style.display = 'block';
             authError.innerText = '';
+        });
+
+        // WebSocket Connect Button
+        connectButton.addEventListener('click', connectWebSocket);
+
+        // Action Buttons
+        buttonsGrid.addEventListener('click', (e) => {
+            if (e.target.classList.contains('grid-button')) {
+                const actionData = e.target.dataset.action;
+                sendWsMessage(actionData);
+            }
         });
 
     </script>

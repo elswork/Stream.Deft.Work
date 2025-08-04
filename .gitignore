@@ -1,2 +1,27 @@
-\n# Firebase token\n
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directorio de dependencias de Node.js
+# Se debe ignorar en el directorio del servidor
+server/node_modules/
+
+# Certificados SSL locales
+# Nunca se deben subir al repositorio
+server/*.pem
+
+# Ficheros de Firebase
+# El cache local de hosting no debe ser versionado
+.firebase/
+
+# Ficheros de entorno
+# Si en el futuro se añade un .env, debe ser ignorado
 .env
+.env.*
+!.env.example
