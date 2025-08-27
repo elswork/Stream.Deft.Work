@@ -80,7 +80,7 @@ function init() {
 
     // --- CONEXIÓN MULTIJUGADOR ---
     // IMPORTANTE: Cambia 'localhost' por la IP de tu ordenador en tu red local
-    const socket = io('http://192.168.1.34:3000');
+    const socket = io('http://deft.work:8383');
 
     socket.on('connect', () => {
         console.log('Conectado al servidor con ID:', socket.id);

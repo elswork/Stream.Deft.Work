@@ -3,7 +3,7 @@ services:
   server:
     build: ./server
     ports:
-      - "3000:3000"
+      - "8383:8383"
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
