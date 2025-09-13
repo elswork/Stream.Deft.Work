@@ -138,6 +138,26 @@ io.on('connection', (socket) => {
     monitorIo.emit('event', { type: 'joystick', id: 'move', data: data, timestamp: new Date() });
   });
 
+  // --- TOUCHPAD EVENTS ---
+  socket.on('touchpad-move', (data) => {
+    try {
+      const { dx, dy } = data;
+      const mouse = robot.getMousePos();
+      robot.moveMouse(mouse.x + dx, mouse.y + dy);
+    } catch (error) {
+      console.error('RobotJS touchpad move failed:', error);
+    }
+  });
+
+  socket.on('touchpad-click', () => {
+    try {
+      robot.mouseClick();
+      console.log('Touchpad click executed');
+    } catch (error) {
+      console.error('RobotJS touchpad click failed:', error);
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log('Stream Deft client disconnected:', socket.id);
   });

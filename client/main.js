@@ -4,10 +4,6 @@ const DECK_BUTTONS = [
     { id: 'action-2', label: 'Action 2' },
     { id: 'action-3', label: 'Action 3' },
     // { id: 'action-4', label: 'Action 4' }, // Replaced by Typer
-    { id: 'action-5', label: 'Action 5' },
-    { id: 'action-6', label: 'Action 6' },
-    { id: 'action-7', label: 'Action 7' },
-    { id: 'action-8', label: 'Action 8' },
 ];
 
 // --- INITIALIZATION ---
@@ -22,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io(); // Auto-connect to the server that serves the page
     const deckContainer = document.getElementById('deck-container');
     const joystickZone = document.getElementById('joystick-zone');
+    const touchpadZone = document.getElementById('touchpad-zone');
     const textInput = document.getElementById('text-to-type');
     const typeButton = document.getElementById('type-button');
 
@@ -78,4 +75,47 @@ document.addEventListener('DOMContentLoaded', () => {
     manager.on('end', function () {
         socket.emit('joystick-move', { angle: 0, distance: 0 }); // Reset position
     });
+
+    // --- TOUCHPAD LOGIC ---
+    let lastX = 0;
+    let lastY = 0;
+    let isDragging = false;
+    let touchStartTime = 0;
+    const deadZone = 1.5; // Ignore movements smaller than this threshold
+
+    touchpadZone.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+        isDragging = true;
+        touchStartTime = new Date().getTime();
+    }, { passive: false });
+
+    touchpadZone.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!isDragging) return;
+
+        const touch = e.touches[0];
+        const dx = touch.clientX - lastX;
+        const dy = touch.clientY - lastY;
+
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+
+        // Only send movement if it's outside the dead zone
+        if (Math.abs(dx) > deadZone || Math.abs(dy) > deadZone) {
+            socket.emit('touchpad-move', { dx, dy });
+        }
+    }, { passive: false });
+
+    touchpadZone.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isDragging = false;
+        const touchEndTime = new Date().getTime();
+        // If the touch duration is short, consider it a tap (click)
+        if (touchEndTime - touchStartTime < 200) {
+            socket.emit('touchpad-click');
+        }
+    }, { passive: false });
 });
