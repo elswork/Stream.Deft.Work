@@ -1,38 +1,35 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const { exec } = require('child_process'); // To execute shell commands
+const path = require('path'); // To handle file paths
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
-  cors: { // Permitir conexiones desde cualquier origen
+  cors: {
     origin: "*",
   }
 });
 
 const PORT = process.env.PORT || 8383;
 
-const players = {};
+// Serve static files from the "client" directory
+app.use(express.static(path.join(__dirname, 'client')));
 
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
-  // Inicializa al jugador
-  players[socket.id] = {
-    position: { x: 0, y: 1.5, z: 5 },
-    rotation: { x: 0, y: 0, z: 0 }
-  };
+  console.log('Stream Deft client connected:', socket.id);
 
-  // Escucha el movimiento del jugador
-  socket.on('playerMove', (data) => {
-    players[socket.id] = data;
-    // Por ahora, solo lo mostramos en la consola del servidor
-    // console.log('Player moved:', socket.id, data);
+  // Listen for a custom action from the client
+  socket.on('stream-action', (actionId) => {
+    console.log(`Action received: ${actionId}`);
+
+    // Here you would define what each actionId does.
+    // For now, we'll just log it.
   });
 
-  // Gestiona la desconexión
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-    delete players[socket.id];
+    console.log('Stream Deft client disconnected:', socket.id);
   });
 });
 

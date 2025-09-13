@@ -3,30 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Mobile FPS Game</title>
+    <title>Stream Deft</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="container">
-        <button id="startButton">Start</button>
-    </div>
-
-    <div id="joystick-zone"></div>
+    <div id="deck-container"></div>
 
     <!-- Socket.IO Client Library -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
-    <!-- NippleJS Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
-
-    <!-- Three.js library -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-            }
-        }
-    </script>
-    <script type="module" src="main.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

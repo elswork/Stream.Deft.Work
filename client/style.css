@@ -1,46 +1,39 @@
 body, html {
     margin: 0;
     padding: 0;
-    overflow: hidden;
     width: 100%;
     height: 100%;
-    background-color: #000;
+    background-color: #111;
+    font-family: sans-serif;
 }
 
-canvas {
-    display: block;
-    position: fixed; /* Asegura que el canvas no interfiera con el joystick */
-    top: 0;
-    left: 0;
+#deck-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-#joystick-zone {
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-    /* background: rgba(255, 255, 255, 0.2); */ /* Descomentar para depurar la zona */
-    z-index: 10;
-}
-
-
-#container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+.deck-button {
+    aspect-ratio: 1 / 1;
+    background-color: #333;
+    border: 2px solid #555;
+    border-radius: 15px;
+    color: white;
+    font-size: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+    user-select: none;
 }
 
-#startButton {
-    padding: 20px;
-    font-size: 24px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.deck-button:hover {
+    background-color: #444;
+}
+
+.deck-button:active {
+    background-color: #555;
+    border-color: #777;
 }
