@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Stream Deft</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
 </head>
 <body>
+    <div id="typer-container">
+        <input type="text" id="text-to-type" placeholder="Escribe aquí para enviar al PC...">
+        <div id="type-button" class="deck-button">Enviar Texto</div>
+    </div>
+
+    <div id="joystick-zone"></div>
     <div id="deck-container"></div>
 
     <!-- Socket.IO Client Library -->
