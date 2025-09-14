@@ -1,9 +1,22 @@
+:root {
+  --celeste: #c5fffd;
+  --non-photo-blue: #88d9e6;
+  --cool-gray: #8b8bae;
+  --feldgrau: #526760;
+  --dark-slate-gray: #374b4a;
+
+  --celeste-rgb: 197, 255, 253;
+  --non-photo-blue-rgb: 136, 217, 230;
+  --cool-gray-rgb: 139, 139, 174;
+  --feldgrau-rgb: 82, 103, 96;
+  --dark-slate-gray-rgb: 55, 75, 74;
+}
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #111;
+    background-color: var(--dark-slate-gray);
     font-family: sans-serif;
     display: flex;
     flex-direction: column;
@@ -17,10 +30,10 @@ body, html {
 
 #text-to-type {
     flex-grow: 1;
-    background-color: #222;
-    border: 2px solid #555;
+    background-color: var(--non-photo-blue);
+    border: 2px solid var(--cool-gray);
     border-radius: 15px;
-    color: white;
+    color: var(--celeste);
     font-size: 16px;
     padding: 0 15px;
 }
@@ -40,10 +53,10 @@ body, html {
 
 .deck-button {
     aspect-ratio: 1 / 1;
-    background-color: #333;
-    border: 2px solid #555;
+    background-color: var(--feldgrau);
+    border: 2px solid var(--cool-gray);
     border-radius: 15px;
-    color: white;
+    color: var(--celeste);
     font-size: 16px;
     display: flex;
     justify-content: center;
@@ -53,12 +66,12 @@ body, html {
 }
 
 .deck-button:hover {
-    background-color: #444;
+    background-color: var(--non-photo-blue);
 }
 
 .deck-button:active {
-    background-color: #555;
-    border-color: #777;
+    background-color: var(--dark-slate-gray);
+    border-color: var(--cool-gray);
 }
 
 #controls-container {
@@ -73,12 +86,12 @@ body, html {
 #joystick-zone, #touchpad-zone {
     width: 150px;
     height: 150px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(var(--celeste-rgb), 0.1);
     border-radius: 15px;
     position: relative;
 }
 
 #touchpad-zone {
     border-radius: 15px;
-    border: 2px dashed #555;
+    border: 2px dashed var(--cool-gray);
 }
